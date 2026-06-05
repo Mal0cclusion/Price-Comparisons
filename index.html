@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF Dental Clinic — Price Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0ede8;
+    --border: #ddd9d3;
+    --border2: #c8c4be;
+    --text: #1a1917;
+    --muted: #6b6860;
+    --hint: #9e9b96;
+    --accent: #1a5c3a;
+    --accent-bg: #e8f3ec;
+    --accent-text: #1a5c3a;
+    --warn-bg: #fef4e6;
+    --warn-text: #8a4f00;
+    --danger-bg: #fdecea;
+    --danger-text: #8a1f1f;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141412;
+      --surface: #1e1d1b;
+      --surface2: #272624;
+      --border: #2e2d2a;
+      --border2: #3d3c38;
+      --text: #f0ede8;
+      --muted: #8a8780;
+      --hint: #5a5855;
+      --accent: #4caf7d;
+      --accent-bg: #0f2e1e;
+      --accent-text: #6dcf9c;
+      --warn-bg: #2a1e09;
+      --warn-text: #e8a740;
+      --danger-bg: #2a1010;
+      --danger-text: #e87070;
+    }
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .logo-sep { color: var(--border2); margin: 0 4px; }
+
+  h1 { font-size: 15px; font-weight: 500; color: var(--text); }
+
+  .subtitle { font-size: 12px; color: var(--hint); margin-left: auto; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .metric-label { font-size: 11px; color: var(--hint); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .metric-val { font-size: 26px; font-weight: 500; color: var(--text); }
+  .metric-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .tab {
+    padding: 9px 18px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-family: 'DM Sans', sans-serif;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    transition: color .15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 500; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .card-title { font-size: 13px; font-weight: 500; }
+  .card-hint { font-size: 11px; color: var(--hint); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 9px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    background: var(--surface2);
+    white-space: nowrap;
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+  }
+  .badge-green { background: var(--accent-bg); color: var(--accent-text); }
+  .badge-amber { background: var(--warn-bg); color: var(--warn-text); }
+  .badge-red   { background: var(--danger-bg); color: var(--danger-text); }
+
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+  .filter-label { font-size: 11px; color: var(--hint); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .pill-btn {
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all .12s;
+  }
+  .pill-btn:hover { border-color: var(--border2); color: var(--text); }
+  .pill-btn.active { background: var(--accent-bg); color: var(--accent-text); border-color: transparent; }
+
+  .tbl-wrap { overflow-x: auto; }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+  .office-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all .12s;
+  }
+  .office-toggle:hover { border-color: var(--border2); color: var(--text); }
+  .office-toggle.active { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+
+  .chart-wrap { position: relative; width: 100%; height: 420px; }
+  canvas { display: block; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; font-size: 12px; color: var(--muted); }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .legend-sq { width: 10px; height: 10px; border-radius: 2px; }
+
+  .proc-name { font-weight: 500; font-size: 13px; }
+  .proc-code { font-size: 10px; color: var(--hint); font-family: 'DM Mono', monospace; }
+
+  .num { font-family: 'DM Mono', monospace; font-size: 12px; }
+  .sf-num { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent); }
+  .diff { font-size: 10px; color: var(--hint); font-family: 'DM Mono', monospace; }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 11px;
+    color: var(--hint);
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
+    main { padding: 16px 12px; }
+    .subtitle { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">SF<span class="logo-sep">/</span>Dental</span>
+  <h1>Patient Price Comparison</h1>
+  <span class="subtitle">Santa Fe College Clinic vs. Local Gainesville Offices</span>
+</header>
+
+<main>
+  <div class="metrics" id="metric-grid"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('overview')">Overview</button>
+    <button class="tab" onclick="switchTab('procedure')">By procedure</button>
+    <button class="tab" onclick="switchTab('chart')">Chart</button>
+  </div>
+
+  <div id="sec-overview" class="section active">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Top 10 procedures by patient savings</span>
+        <span class="card-hint">SF fee vs. avg local price</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Procedure</th>
+            <th>SF fee</th>
+            <th>Avg local</th>
+            <th>Savings</th>
+            <th>% saved</th>
+          </tr></thead>
+          <tbody id="top-savings-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="sec-procedure" class="section">
+    <div class="filter-row">
+      <span class="filter-label">Category</span>
+      <div id="category-filters" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table id="proc-table" style="min-width:720px;">
+          <thead id="proc-thead"></thead>
+          <tbody id="proc-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="sec-chart" class="section">
+    <div class="filter-row" style="margin-bottom:10px;">
+      <span class="filter-label">Offices</span>
+      <div id="office-toggles" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    </div>
+    <p style="font-size:12px;color:var(--hint);margin-bottom:12px;">Top 12 procedures by dollar savings. Toggle offices to compare.</p>
+    <div class="card" style="padding:20px;">
+      <div class="chart-wrap">
+        <canvas id="myChart" role="img" aria-label="Horizontal bar chart comparing SF dental clinic fees vs local office fees"></canvas>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </div>
+</main>
+
+<footer>Santa Fe College · Dental Programs · Data for internal use only</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const OFFICE_KEYS   = ['Tioga','Goodrich','Pomeranz','Millhopper','Trenton','Oliver','KidsOnly'];
+const OFFICE_LABELS = {Tioga:'Tioga',Goodrich:'Goodrich',Pomeranz:'Pomeranz',Millhopper:'Millhopper',Trenton:'Trenton',Oliver:'Oliver',KidsOnly:'Kids Only'};
+const COLORS = ['#2a7d4f','#b05e2a','#2a5fa0','#8a3a8a','#7a6a1a','#2a7a7a','#a03a3a'];
+
+const raw = [
+  {name:'Prophy',code:'D1110',cat:'Preventive',sf:50,prices:{Tioga:122,Goodrich:103,Pomeranz:110,Millhopper:133,Trenton:100,Oliver:null,KidsOnly:119}},
+  {name:'Perio Maint.',code:'D4910',cat:'Preventive',sf:50,prices:{Tioga:193,Goodrich:213,Pomeranz:150,Millhopper:197,Trenton:158,Oliver:212,KidsOnly:null}},
+  {name:'SRP (per quad)',code:'D4341',cat:'Perio',sf:45,prices:{Tioga:358,Goodrich:286,Pomeranz:192,Millhopper:262,Trenton:203,Oliver:386,KidsOnly:null}},
+  {name:'Scaling w/Infl.',code:'D4346',cat:'Perio',sf:50,prices:{Tioga:166,Goodrich:103,Pomeranz:164,Millhopper:136,Trenton:175,Oliver:null,KidsOnly:null}},
+  {name:'Fluoride (varnish)',code:'D1208',cat:'Preventive',sf:0,prices:{Tioga:47,Goodrich:32,Pomeranz:44,Millhopper:52,Trenton:46,Oliver:null,KidsOnly:null}},
+  {name:'Arestin',code:'D4381',cat:'Perio',sf:0,prices:{Tioga:55,Goodrich:115,Pomeranz:80,Millhopper:null,Trenton:null,Oliver:null,KidsOnly:null}},
+  {name:'Debridement',code:'D4355',cat:'Perio',sf:50,prices:{Tioga:215,Goodrich:103,Pomeranz:182,Millhopper:262,Trenton:191,Oliver:null,KidsOnly:null}},
+  {name:'FMX',code:'D0210',cat:'Radiograph',sf:50,prices:{Tioga:171,Goodrich:162,Pomeranz:144,Millhopper:182,Trenton:150,Oliver:205,KidsOnly:null}},
+  {name:'4 BWs',code:'D0274',cat:'Radiograph',sf:25,prices:{Tioga:93,Goodrich:80,Pomeranz:70,Millhopper:94,Trenton:74,Oliver:101,KidsOnly:86}},
+  {name:'Panoramic',code:'D0330',cat:'Radiograph',sf:50,prices:{Tioga:149,Goodrich:142,Pomeranz:128,Millhopper:177,Trenton:131,Oliver:185,KidsOnly:150}},
+  {name:'1-surf composite',code:'D2391',cat:'Restorative',sf:80,prices:{Tioga:331,Goodrich:318,Pomeranz:276,Millhopper:null,Trenton:202,Oliver:null,KidsOnly:null}},
+  {name:'2-surf composite',code:'D2392',cat:'Restorative',sf:100,prices:{Tioga:358,Goodrich:400,Pomeranz:276,Millhopper:null,Trenton:253,Oliver:null,KidsOnly:null}},
+  {name:'3-surf composite',code:'D2393',cat:'Restorative',sf:120,prices:{Tioga:414,Goodrich:509,Pomeranz:325,Millhopper:null,Trenton:305,Oliver:null,KidsOnly:null}},
+  {name:'4-surf composite',code:'D2394',cat:'Restorative',sf:160,prices:{Tioga:441,Goodrich:584,Pomeranz:382,Millhopper:null,Trenton:358,Oliver:null,KidsOnly:null}},
+  {name:'Crown (PFM)',code:'D2750',cat:'Restorative',sf:375,prices:{Tioga:1489,Goodrich:1931,Pomeranz:1385,Millhopper:1647,Trenton:1291,Oliver:null,KidsOnly:null}},
+  {name:'Build-up',code:'D2950',cat:'Restorative',sf:100,prices:{Tioga:368,Goodrich:486,Pomeranz:295,Millhopper:null,Trenton:294,Oliver:null,KidsOnly:null}},
+  {name:'Bleaching trays',code:'D9975',cat:'Other',sf:60,prices:{Tioga:null,Goodrich:447,Pomeranz:400,Millhopper:375,Trenton:300,Oliver:null,KidsOnly:null}},
+  {name:'Nightguard',code:'D9944',cat:'Other',sf:55,prices:{Tioga:827,Goodrich:180,Pomeranz:685,Millhopper:null,Trenton:594,Oliver:null,KidsOnly:null}},
+  {name:'Extraction (simple)',code:'D7140',cat:'Oral Surgery',sf:90,prices:{Tioga:220,Goodrich:337,Pomeranz:222,Millhopper:null,Trenton:211,Oliver:null,KidsOnly:246}},
+  {name:'PRR',code:'D1352',cat:'Preventive',sf:55,prices:{Tioga:193,Goodrich:130,Pomeranz:162,Millhopper:null,Trenton:110,Oliver:null,KidsOnly:null}},
+  {name:'Sealant',code:'D1351',cat:'Preventive',sf:20,prices:{Tioga:null,Goodrich:59,Pomeranz:57,Millhopper:72,Trenton:62,Oliver:null,KidsOnly:75}},
+  {name:'SDF',code:'D1354',cat:'Preventive',sf:20,prices:{Tioga:null,Goodrich:55,Pomeranz:60,Millhopper:null,Trenton:62,Oliver:null,KidsOnly:31}},
+];
+
+function avg(proc) {
+  const vals = OFFICE_KEYS.map(k => proc.prices[k]).filter(v => v != null && v > 0);
+  return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+}
+function savingsPct(sf, a) {
+  if (!a || a === 0) return null;
+  return Math.round((1 - sf/a)*100);
+}
+function pillClass(pct) {
+  if (pct == null) return 'badge-red';
+  if (pct >= 60) return 'badge-green';
+  if (pct >= 40) return 'badge-amber';
+  return 'badge-red';
+}
+
+// Metrics
+(function() {
+  const allSavings = raw.map(p => { const a=avg(p); return a?a-p.sf:null; }).filter(Boolean);
+  const avgSav = Math.round(allSavings.reduce((a,b)=>a+b,0)/allSavings.length);
+  const maxSav = Math.max(...raw.map(p=>{ const a=avg(p); return a?a-p.sf:0; }));
+  const maxProc = raw.find(p=>{ const a=avg(p); return a&&(a-p.sf)===maxSav; });
+  const allPcts = raw.map(p=>{ const a=avg(p); return a&&p.sf>0?savingsPct(p.sf,a):null; }).filter(v=>v!=null);
+  const avgPct = Math.round(allPcts.reduce((a,b)=>a+b,0)/allPcts.length);
+  document.getElementById('metric-grid').innerHTML = [
+    {label:'Avg patient savings',val:'$'+avgSav,sub:'vs local avg per procedure'},
+    {label:'Avg % saved',val:avgPct+'%',sub:'across all procedures'},
+    {label:'Highest $ savings',val:'$'+maxSav,sub:maxProc?maxProc.name:''},
+    {label:'Procedures tracked',val:raw.length,sub:'across 7 local offices'},
+  ].map(m=>`<div class="metric"><div class="metric-label">${m.label}</div><div class="metric-val">${m.val}</div><div class="metric-sub">${m.sub}</div></div>`).join('');
+})();
+
+// Top savings
+(function() {
+  const sorted = raw.map(p=>{ const a=avg(p); return {...p,avgLocal:a,savings:a?a-p.sf:0,pct:a?savingsPct(p.sf,a):null}; })
+    .filter(p=>p.avgLocal).sort((a,b)=>b.savings-a.savings).slice(0,10);
+  document.getElementById('top-savings-body').innerHTML = sorted.map(p=>`
+    <tr>
+      <td><div class="proc-name">${p.name}</div><div class="proc-code">${p.code} · ${p.cat}</div></td>
+      <td><span class="sf-num">$${p.sf}</span></td>
+      <td><span class="num">$${p.avgLocal}</span></td>
+      <td><span class="num" style="font-weight:500">$${p.savings}</span></td>
+      <td><span class="badge ${pillClass(p.pct)}">${p.pct!=null?p.pct+'%':'—'}</span></td>
+    </tr>`).join('');
+})();
+
+// Category filters
+const cats = [...new Set(raw.map(r=>r.cat))];
+let activeCat = 'All';
+function renderCatFilters() {
+  document.getElementById('category-filters').innerHTML = ['All',...cats].map(c=>
+    `<button class="pill-btn ${c===activeCat?'active':''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
+}
+function setCat(cat) { activeCat=cat; renderCatFilters(); renderProcTable(); }
+
+function renderProcTable() {
+  const filtered = activeCat==='All' ? raw : raw.filter(r=>r.cat===activeCat);
+  document.getElementById('proc-thead').innerHTML = `<tr>
+    <th style="min-width:140px">Procedure</th>
+    <th>SF fee</th>
+    <th>Avg local</th>
+    ${OFFICE_KEYS.map(k=>`<th>${OFFICE_LABELS[k]}</th>`).join('')}
+  </tr>`;
+  document.getElementById('proc-tbody').innerHTML = filtered.map(p=>{
+    const a=avg(p), pct=a?savingsPct(p.sf,a):null;
+    const cells=OFFICE_KEYS.map(k=>{
+      const v=p.prices[k];
+      if(!v) return `<td style="color:var(--hint);text-align:right">—</td>`;
+      return `<td style="text-align:right"><span class="num">$${v}</span><div class="diff">-$${v-p.sf}</div></td>`;
+    }).join('');
+    return `<tr>
+      <td><div class="proc-name">${p.name}</div><div class="proc-code">${p.code}</div></td>
+      <td><span class="sf-num">$${p.sf}</span></td>
+      <td>${a?`<span class="num">$${a}</span> <span class="badge ${pillClass(pct)}" style="vertical-align:middle">${pct}%</span>`:'-'}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+}
+renderCatFilters(); renderProcTable();
+
+// Chart
+let activeOffices = new Set(OFFICE_KEYS), chartInst = null;
+
+function renderOfficeToggles() {
+  document.getElementById('office-toggles').innerHTML = OFFICE_KEYS.map((k,i)=>
+    `<button class="office-toggle ${activeOffices.has(k)?'active':''}" onclick="toggleOffice('${k}')">
+      <span class="dot" style="background:${COLORS[i]}"></span>${OFFICE_LABELS[k]}
+    </button>`
+  ).join('');
+}
+
+function toggleOffice(k) {
+  if(activeOffices.has(k)){ if(activeOffices.size>1) activeOffices.delete(k); }
+  else activeOffices.add(k);
+  renderOfficeToggles(); renderChart();
+}
+
+function renderChart() {
+  const byPct = raw.map(p=>{ const a=avg(p); return {...p,avgLocal:a,savings:a?a-p.sf:0,pct:a?savingsPct(p.sf,a):null}; })
+    .filter(p=>p.avgLocal&&p.pct!=null).sort((a,b)=>b.savings-a.savings).slice(0,12);
+  const labels = byPct.map(p=>p.name);
+  const datasets = [...activeOffices].map(k=>{
+    const i=OFFICE_KEYS.indexOf(k);
+    return { label:OFFICE_LABELS[k], data:byPct.map(p=>p.prices[k]||null), backgroundColor:COLORS[i]+'bb', borderColor:COLORS[i], borderWidth:1, borderRadius:3 };
+  });
+  const sfSet = { label:'SF College', data:byPct.map(p=>p.sf), backgroundColor:'#555555bb', borderColor:'#333', borderWidth:1, borderRadius:3 };
+  if(chartInst) chartInst.destroy();
+  chartInst = new Chart(document.getElementById('myChart').getContext('2d'), {
+    type:'bar',
+    data:{ labels, datasets:[sfSet,...datasets] },
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:ctx=>`${ctx.dataset.label}: $${ctx.raw??'—'}` } } },
+      scales:{
+        x:{ beginAtZero:true, ticks:{ callback:v=>'$'+v, font:{size:11} }, grid:{color:'rgba(128,128,128,0.1)'} },
+        y:{ ticks:{ font:{size:11} } }
+      }
+    }
+  });
+  document.getElementById('legend').innerHTML = [
+    `<span><span class="legend-sq" style="background:#555"></span>SF College</span>`,
+    ...[...activeOffices].map(k=>`<span><span class="legend-sq" style="background:${COLORS[OFFICE_KEYS.indexOf(k)]}"></span>${OFFICE_LABELS[k]}</span>`)
+  ].join('');
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['overview','procedure','chart'][i]===name));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  if(name==='chart' && !chartInst){ renderOfficeToggles(); renderChart(); }
+}
+</script>
+</body>
+</html>
